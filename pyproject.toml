@@ -34,6 +34,12 @@ dependencies = [
     "pyshp>=2.3",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
+    "pyte>=0.8.1",
+]
+
 [project.urls]
 Homepage = "https://github.com/a-shygun/terrascope"
 Repository = "https://github.com/a-shygun/terrascope"
@@ -52,4 +58,11 @@ include = [
     "/CHANGELOG.md",
     "/LICENSE",
     "/docs/RELEASING.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+markers = [
+    "e2e: drives the real terrascope executable in a pseudo-terminal (slower; POSIX only)",
 ]
