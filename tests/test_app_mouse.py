@@ -392,6 +392,23 @@ def test_panel_button_toggles_the_panel(make_app):
     assert app.panel_visible is True
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason="BUG: hiding the panel while the plane search / filter prompt is open leaves a "
+    "hidden text mode capturing every key (issue #3 via the panel button; fixed by PR #22)",
+)
+@pytest.mark.parametrize("key", ["/", "o"])
+def test_hiding_the_panel_while_a_planes_prompt_is_open_releases_the_keyboard(make_app, key):
+    app = make_app(tab="planes")
+    app.handle_key(ord(key))
+    assert app.mode != "normal"
+    row, x, text = panel_button_slot(app.layout(40, 120).map, app.panel_visible)
+    app._mouse_event("press", x, row)
+    assert app.panel_visible is False
+    app.handle_key(ord("2"))
+    assert app.active_tab == TAB_INDEX["time"]
+
+
 def test_map_tab_has_no_panel_button(make_app):
     app = make_app()
     row, x, text = panel_button_slot(app.layout(40, 120).map, app.panel_visible)
